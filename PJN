@@ -512,7 +512,7 @@ repeat task.wait()
         ["retzep015"]            = {tag="kyro zeppleli",      pfpId="81729630000205",  bgId="83987221135744"},
         ["Dan_krokstad123456"]          = {tag="Femboy for Ghoul",         pfpId="110924587623192", bgId="102635502269425",  bgColor=Color3.fromRGB(255,105,180)},
         ["IL0V3DONUTS1"]        = {tag="ADMIN Josh",    pfpId="134590424990754",               bgId="115137237216471"},
-        ["lolfearfox"]          = {tag="fearfox",          pfpId="",               bgId="97099238046338"},
+        ["ui_toilet"]          = {tag="STFN",          pfpId="137010341071655",               bgId="107081516165362"},
         ["flip1234416"]         = {tag="fearfox",          pfpId="",               bgId="97099238046338"},
         ["xnearfeds"]           = {tag="PJ USER",          pfpId="",               bgId=""},
     }

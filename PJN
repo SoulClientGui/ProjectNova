@@ -505,7 +505,7 @@ repeat task.wait()
     local SPECIAL_ASSETS = {
         ["whatdaskib12345"]      = {tag=" NOVA OWNER",        pfpId="95353044120098", bgId="97099238046338"},
         ["Cxnved"]   = {tag=" NOVA CO-OWNER",        pfpId="132075757548488", bgId="89041127438600"},
-        ["Mario826264WALT"]         = {tag="Joestar Support", pfpId="82253169256844", bgId="117325003651586"},
+        ["Mario826264WALT"]         = {tag="Joestar Admin", pfpId="82253169256844", bgId="117325003651586"},
         ["Salvatun5"] = {tag="DADDY ZIX",      pfpId="121891499478693", bgId="87400512362478"},
         ["Mario826264W"]         = {tag="ADMIN Demi",         pfpId="99484136182730", bgId="137339078522566"},
         ["cxrsedNovapgn"]            = {tag="Owner Alt",        pfpId="73477034307775",  bgId="101240744460926"},
@@ -2504,17 +2504,9 @@ repeat task.wait()
                     local tHRP=tChar:FindFirstChild("HumanoidRootPart"); local mHRP=mc:FindFirstChild("HumanoidRootPart")
                     if tHRP and mHRP then local offset=copySide=="Left" and CFrame.new(-copyDist,0,0) or CFrame.new(copyDist,0,0); mHRP.CFrame=tHRP.CFrame*offset; mHRP.AssemblyLinearVelocity=tHRP.AssemblyLinearVelocity end
                     if tAnim and mAnim then
-                        local function isDanceAnimation(tr)
-                            if not tr then return false end
-                            local id=tostring(tr.Animation.AnimationId):lower()
-                            local dur=tr.TimeLength or 0
-                            if tr.Priority==Enum.AnimationPriority.Action and dur>0 then return true end
-                            if id:find("rbxassetid:") and dur>1 then return true end
-                            return false
-                        end
-                        local playing={}; for _,tr in ipairs(tAnim:GetPlayingAnimationTracks()) do if isDanceAnimation(tr) then playing[tr.Animation.AnimationId]=tr end end
-                        for _,tr in ipairs(mAnim:GetPlayingAnimationTracks()) do if isDanceAnimation(tr) and not playing[tr.Animation.AnimationId] then tr:Stop(0) end end
-                        for id,tr in pairs(playing) do local found=false; for _,myTr in ipairs(mAnim:GetPlayingAnimationTracks()) do if myTr.Animation.AnimationId==id and isDanceAnimation(myTr) then found=true; break end end; if not found then pcall(function() local anim=Instance.new("Animation"); anim.AnimationId=id; local newTr=mAnim:LoadAnimation(anim); newTr:Play(0); newTr.TimePosition=tr.TimePosition end) end end
+                        local playing={}; for _,tr in ipairs(tAnim:GetPlayingAnimationTracks()) do playing[tr.Animation.AnimationId]=tr end
+                        for _,tr in ipairs(mAnim:GetPlayingAnimationTracks()) do if not playing[tr.Animation.AnimationId] then tr:Stop(0) end end
+                        for id,tr in pairs(playing) do local found=false; for _,myTr in ipairs(mAnim:GetPlayingAnimationTracks()) do if myTr.Animation.AnimationId==id then found=true; break end end; if not found then pcall(function() local anim=Instance.new("Animation"); anim.AnimationId=id; local newTr=mAnim:LoadAnimation(anim); newTr:Play(0); newTr.TimePosition=tr.TimePosition end) end end
                     end
                 end)
             else

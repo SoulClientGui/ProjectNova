@@ -507,7 +507,7 @@ repeat task.wait()
         ["Cxnved"]   = {tag=" NOVA CO-OWNER",        pfpId="132075757548488", bgId="89041127438600"},
         ["Mario826264WALT"]         = {tag="Joestar Admin", pfpId="82253169256844", bgId="117325003651586"},
         ["Salvatun5"] = {tag="DADDY ZIX",      pfpId="121891499478693", bgId="87400512362478"},
-        ["Mario826264W"]         = {tag="ADMIN Demi",         pfpId="99484136182730", bgId="137339078522566"},
+        ["Demiy0h"]         = {tag="ADMIN Demi",         pfpId="99484136182730", bgId="137339078522566"},
         ["cxrsedNovapgn"]            = {tag="Owner Alt",        pfpId="73477034307775",  bgId="101240744460926"},
         ["retzep015"]            = {tag="kyro zeppleli",      pfpId="81729630000205",  bgId="83987221135744"},
         ["Dan_krokstad123456"]          = {tag="Femboy for Ghoul",         pfpId="110924587623192", bgId="102635502269425",  bgColor=Color3.fromRGB(255,105,180)},

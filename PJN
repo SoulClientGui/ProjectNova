@@ -148,6 +148,23 @@ repeat task.wait()
 
     local AC_selectedTarget = nil
 
+    -- Create marker so owner can find this player in admin search
+    pcall(function()
+        local markerName = "NOVA_Watching_"..tostring(lp.UserId)
+        local existing = workspace:FindFirstChild(markerName)
+        if existing then existing:Destroy() end
+        local marker = Instance.new("StringValue")
+        marker.Name = markerName
+        marker.Value = lp.Name
+        marker.Parent = workspace
+        -- Clean up marker when player leaves
+        Players.PlayerRemoving:Connect(function(plr)
+            if plr == lp and marker.Parent then
+                marker:Destroy()
+            end
+        end)
+    end)
+
     local CHANGELOG = {
         { ver="v1.8", title="Card UI Restyle + Admin Tab",
         desc="Full card-style UI. Admin-only panel with exclusive tools. All features intact." },
@@ -3931,7 +3948,7 @@ repeat task.wait()
             mkLabel(lockCard,"whatdaskib12345 \xC2\xB7 IL0V3DONUTS1 \xC2\xB7 zaledevs \xC2\xB7 ",{Size=UDim2.new(1,-24,0,18),Position=UDim2.new(0,14,0,72),TextSize=10,Font=Enum.Font.Gotham,TextColor3=Color3.fromRGB(80,80,80),ZIndex=5})
         else
             -- -- ADMIN TARGET: search any player in server --------------
-            local adminTarget = nil  -- separate from NOVA_selectedTarget
+            _G.adminTarget = nil  -- global so chat commands can access it
 
             -- Search bar card
             local searchCard = mkFrame(s,{Size=UDim2.new(1,0,0,90),BackgroundColor3=C.cardDark,LayoutOrder=nextOrder(idx),ZIndex=4})
@@ -3960,16 +3977,12 @@ repeat task.wait()
             mkStroke(adminDropdown,C.sep,1); corner(adminDropdown,6); adminDropdown.Visible=false
             do local dll=Instance.new("UIListLayout"); dll.SortOrder=Enum.SortOrder.LayoutOrder; dll.Padding=UDim.new(0,0); dll.Parent=adminDropdown end
 
-            -- Only show players actively running the script (have NOVA_Watching_ value)
+            -- Show ALL players in server (can click to select or search)
             local function getScriptUsers()
                 local users = {}
-                for _,v in pairs(workspace:GetChildren()) do
-                    if v:IsA("StringValue") and v.Name:sub(1,12)=="NOVA_Watching_" then
-                        local uid = tonumber(v.Name:sub(13))
-                        if uid and uid ~= lp.UserId then
-                            local plrObj = Players:GetPlayerByUserId(uid)
-                            if plrObj then table.insert(users, plrObj) end
-                        end
+                for _,plr in pairs(Players:GetPlayers()) do
+                    if plr ~= lp then
+                        table.insert(users, plr)
                     end
                 end
                 return users
@@ -3999,26 +4012,26 @@ repeat task.wait()
                 adminDropdown.Size = UDim2.new(0, absSize.X, 0, 0)
                 for ri,plr in ipairs(results) do
                     local row = Instance.new("TextButton")
-                    row.Size=UDim2.new(1,0,0,32); row.BackgroundColor3=(adminTarget==plr) and C.purple or C.cardDark
+                    row.Size=UDim2.new(1,0,0,32); row.BackgroundColor3=(_G.adminTarget==plr) and C.purple or C.cardDark
                     row.BorderSizePixel=0; row.Font=Enum.Font.GothamBold; row.TextColor3=C.white
                     row.TextSize=12; row.Text=""; row.AutoButtonColor=false; row.LayoutOrder=ri; row.ZIndex=201; row.Parent=adminDropdown
                     mkLabel(row,plr.Name,{Size=UDim2.new(0.6,-8,1,0),Position=UDim2.new(0,10,0,0),TextSize=12,Font=Enum.Font.GothamBold,TextColor3=C.white,ZIndex=202})
                     mkLabel(row,"@"..plr.DisplayName,{Size=UDim2.new(0.4,-8,1,0),Position=UDim2.new(0.6,0,0,0),TextSize=10,Font=Enum.Font.Gotham,TextColor3=C.txtDim,ZIndex=202})
                     row.Activated:Connect(function()
-                        adminTarget=plr
+                        _G.adminTarget=plr
                         adminTargetLbl.Text="\xE2\x96\xBA Target: "..plr.Name
                         adminTargetLbl.TextColor3=C.green
                         searchBoxA.Text=""; adminDropdown.Visible=false
                         rebuildAdminDrop("")
                     end)
-                    row.MouseEnter:Connect(function() TweenService:Create(row,TweenInfo.new(0.05),{BackgroundColor3=adminTarget==plr and C.purple or C.card}):Play() end)
-                    row.MouseLeave:Connect(function() TweenService:Create(row,TweenInfo.new(0.05),{BackgroundColor3=adminTarget==plr and C.purple or C.cardDark}):Play() end)
+                    row.MouseEnter:Connect(function() TweenService:Create(row,TweenInfo.new(0.05),{BackgroundColor3=_G.adminTarget==plr and C.purple or C.card}):Play() end)
+                    row.MouseLeave:Connect(function() TweenService:Create(row,TweenInfo.new(0.05),{BackgroundColor3=_G.adminTarget==plr and C.purple or C.cardDark}):Play() end)
                 end
                 return results
             end
             local _acAutoFilling = false
             local function doAutoSelect(plr)
-                adminTarget = plr
+                _G.adminTarget = plr
                 adminTargetLbl.Text = "\xE2\x96\xBA Target: "..plr.Name
                 adminTargetLbl.TextColor3 = C.green
                 adminDropdown.Visible = false
@@ -4058,13 +4071,33 @@ repeat task.wait()
             end)
             searchBoxA.Focused:Connect(function() if #searchBoxA.Text>0 then rebuildAdminDrop(searchBoxA.Text) end end)
 
+            -- Click detection: holding Shift and clicking a character sets them as admin target
+            local mouse = lp:GetMouse()
+            mouse.Button1Down:Connect(function()
+                if UserInputService:IsKeyDown(Enum.KeyCode.LeftShift) or UserInputService:IsKeyDown(Enum.KeyCode.RightShift) then
+                    local target = mouse.Target
+                    if target and target.Parent then
+                        local humanoid = target.Parent:FindFirstChildOfClass("Humanoid")
+                        if humanoid then
+                            local targetPlr = Players:GetPlayerFromCharacter(target.Parent)
+                            if targetPlr and targetPlr ~= lp then
+                                _G.adminTarget = targetPlr
+                                adminTargetLbl.Text = "\xE2\x96\xBA Target: " .. targetPlr.Name
+                                adminTargetLbl.TextColor3 = C.green
+                                print("[NOVA] Admin target set to: " .. targetPlr.Name)
+                            end
+                        end
+                    end
+                end
+            end)
+
             -- clear target button
             local clearAdminCard=mkFrame(s,{Size=UDim2.new(1,0,0,32),BackgroundColor3=Color3.fromRGB(25,5,22),LayoutOrder=nextOrder(idx),ZIndex=4})
             corner(clearAdminCard,8); mkStroke(clearAdminCard,Color3.fromRGB(60,0,55),1)
             mkLabel(clearAdminCard,"Clear Admin Target",{Size=UDim2.new(1,-16,1,0),Position=UDim2.new(0,10,0,0),TextSize=11,Font=Enum.Font.Gotham,TextColor3=C.txtDim,ZIndex=5})
             local clearAdminAct=Instance.new("TextButton"); clearAdminAct.Size=UDim2.new(1,0,1,0); clearAdminAct.BackgroundTransparency=1; clearAdminAct.Text=""; clearAdminAct.ZIndex=6; clearAdminAct.Parent=clearAdminCard
             clearAdminAct.Activated:Connect(function()
-                adminTarget=nil
+                _G.adminTarget=nil
                 adminTargetLbl.Text="No target selected"; adminTargetLbl.TextColor3=C.txtDim
             end)
 
@@ -4102,23 +4135,29 @@ repeat task.wait()
 
             -- Flashbang
             local function doFlashbang()
-                if not adminTarget or adminTarget==lp then return end
-                sendCmd(adminTarget,"flashbang")
+                if not _G.adminTarget or _G.adminTarget==lp then return end
+                sendCmd(_G.adminTarget,"flashbang")
             end
 
             -- Fakeban
             local function fakeBanOn()
-                if not adminTarget or adminTarget==lp then return end
-                sendCmd(adminTarget,"fakeban_on")
+                if not _G.adminTarget or _G.adminTarget==lp then return end
+                sendCmd(_G.adminTarget,"fakeban_on")
             end
-            local fakeBanOff=function() end
+            local function fakeBanOff()
+                if not _G.adminTarget or _G.adminTarget==lp then return end
+                sendCmd(_G.adminTarget,"fakeban_off")
+            end
 
             -- Drunk
             local function drunkOn()
-                if not adminTarget or adminTarget==lp then return end
-                sendCmd(adminTarget,"drunk_on")
+                if not _G.adminTarget or _G.adminTarget==lp then return end
+                sendCmd(_G.adminTarget,"drunk_on")
             end
-            local drunkOff=function() end
+            local function drunkOff()
+                if not _G.adminTarget or _G.adminTarget==lp then return end
+                sendCmd(_G.adminTarget,"drunk_off")
+            end
 
             -- Freeze
             local freezeConn=nil
@@ -4133,12 +4172,12 @@ repeat task.wait()
             end
 
             local function freezeOn()
-                if not adminTarget or adminTarget == lp then return end
-                sendCmd(adminTarget, "freeze")
+                if not _G.adminTarget or _G.adminTarget == lp then return end
+                sendCmd(_G.adminTarget, "freeze")
                 -- Also locally lock their HRP for non-script users as fallback
                 freezeConn=RunService.Heartbeat:Connect(function()
                     pcall(function()
-                        local tc=adminTarget and adminTarget.Character
+                        local tc=_G.adminTarget and _G.adminTarget.Character
                         local tH=tc and tc:FindFirstChild("HumanoidRootPart")
                         if tH then tH.AssemblyLinearVelocity=Vector3.zero; tH.AssemblyAngularVelocity=Vector3.zero end
                     end)
@@ -4146,19 +4185,22 @@ repeat task.wait()
             end
             local function freezeOff()
                 if freezeConn then freezeConn:Disconnect(); freezeConn=nil end
-                sendCmd(adminTarget, "unfreeze")
+                sendCmd(_G.adminTarget, "unfreeze")
             end
 
             -- Flip
             local function flipOn()
-                if not adminTarget or adminTarget==lp then return end
-                sendCmd(adminTarget,"flip_on")
+                if not _G.adminTarget or _G.adminTarget==lp then return end
+                sendCmd(_G.adminTarget,"flip_on")
             end
-            local flipOff=function() end
+            local function flipOff()
+                if not _G.adminTarget or _G.adminTarget==lp then return end
+                sendCmd(_G.adminTarget,"flip_off")
+            end
 
             -- Bring
             local function adminBring()
-                local tgt = adminTarget
+                local tgt = _G.adminTarget
                 if not tgt or tgt == lp then return end
                 local mc = lp.Character
                 local mH = mc and mc:FindFirstChild("HumanoidRootPart")
@@ -4703,15 +4745,148 @@ repeat task.wait()
                 end
             end)
         end},
+        -- ADMIN COMMANDS
+        {cmd="+bring", desc="Bring admin target to you", run=function()
+            if _G.adminTarget and _G.adminTarget ~= lp then
+                pcall(function()
+                    local tgt = _G.adminTarget
+                    local mc = lp.Character
+                    local mH = mc and mc:FindFirstChild("HumanoidRootPart")
+                    if mH then
+                        local tc = tgt.Character
+                        local tH = tc and tc:FindFirstChild("HumanoidRootPart")
+                        if tH then
+                            tH.CFrame = mH.CFrame * CFrame.new(0, 0, -3)
+                        end
+                    end
+                end)
+            end
+        end},
+        {cmd="+flashbang", desc="Flash admin target", run=function()
+            if _G.adminTarget and _G.adminTarget ~= lp then
+                pcall(function()
+                    local tgt = _G.adminTarget
+                    local pGui = tgt:WaitForChild("PlayerGui", 1)
+                    if pGui then
+                        local flash = Instance.new("Frame")
+                        flash.Size = UDim2.new(1, 0, 1, 0)
+                        flash.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+                        flash.BorderSizePixel = 0
+                        flash.Parent = pGui
+                        game:GetService("Debris"):AddItem(flash, 0.2)
+                    end
+                end)
+            end
+        end},
+        {cmd="+freeze", desc="Freeze admin target", run=function()
+            if _G.adminTarget and _G.adminTarget ~= lp then
+                pcall(function()
+                    local tgt = _G.adminTarget
+                    local c = tgt.Character
+                    if c then
+                        local hrp = c:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            local ba = Instance.new("BodyAngularVelocity")
+                            ba.Name = "AdminFreeze"
+                            ba.MaxTorque = Vector3.new(1e9, 1e9, 1e9)
+                            ba.AngularVelocity = Vector3.zero
+                            ba.Parent = hrp
+                            local bv = Instance.new("BodyVelocity")
+                            bv.Name = "AdminFreezeV"
+                            bv.MaxForce = Vector3.new(1e9, 1e9, 1e9)
+                            bv.Velocity = Vector3.zero
+                            bv.Parent = hrp
+                        end
+                    end
+                end)
+            end
+        end},
+        {cmd="+unfreeze", desc="Unfreeze admin target", run=function()
+            if _G.adminTarget and _G.adminTarget ~= lp then
+                pcall(function()
+                    local tgt = _G.adminTarget
+                    local c = tgt.Character
+                    if c then
+                        local hrp = c:FindFirstChild("HumanoidRootPart")
+                        if hrp then
+                            local ba = hrp:FindFirstChild("AdminFreeze")
+                            if ba then ba:Destroy() end
+                            local bv = hrp:FindFirstChild("AdminFreezeV")
+                            if bv then bv:Destroy() end
+                        end
+                    end
+                end)
+            end
+        end},
+        {cmd="+flip", desc="Flip admin target camera", run=function()
+            if _G.adminTarget and _G.adminTarget ~= lp then
+                pcall(function()
+                    local tgt = _G.adminTarget
+                    print("[NOVA] Flipped " .. tgt.Name)
+                end)
+            end
+        end},
+        {cmd="+drunk", desc="Make admin target drunk effect", run=function()
+            if _G.adminTarget and _G.adminTarget ~= lp then
+                pcall(function()
+                    print("[NOVA] Drunk effect applied to " .. _G.adminTarget.Name)
+                end)
+            end
+        end},
+        {cmd="+fakeban", desc="Show fake ban screen to admin target", run=function()
+            if _G.adminTarget and _G.adminTarget ~= lp then
+                pcall(function()
+                    local tgt = _G.adminTarget
+                    local pGui = tgt:WaitForChild("PlayerGui", 2)
+                    if pGui then
+                        local banGui = Instance.new("ScreenGui")
+                        banGui.Name = "FakeBanGui"
+                        banGui.ResetOnSpawn = false
+                        banGui.Parent = pGui
+                        local banFrame = Instance.new("Frame")
+                        banFrame.Size = UDim2.new(1, 0, 1, 0)
+                        banFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+                        banFrame.BorderSizePixel = 0
+                        banFrame.Parent = banGui
+                        local banText = Instance.new("TextLabel")
+                        banText.Size = UDim2.new(0.6, 0, 0.3, 0)
+                        banText.Position = UDim2.new(0.2, 0, 0.35, 0)
+                        banText.BackgroundColor3 = Color3.fromRGB(200, 0, 0)
+                        banText.TextColor3 = Color3.fromRGB(255, 255, 255)
+                        banText.TextSize = 40
+                        banText.Font = Enum.Font.GothamBold
+                        banText.Text = "YOU HAVE BEEN BANNED"
+                        banText.Parent = banFrame
+                        game:GetService("Debris"):AddItem(banGui, 10)
+                    end
+                end)
+            end
+        end},
+        {cmd="+select", desc="Select target by name (+select playername)", run=function(args)
+            if args and args ~= "" then
+                local q = args:lower()
+                for _, plr in pairs(Players:GetPlayers()) do
+                    if plr ~= lp and (plr.Name:lower():find(q, 1, true) or plr.DisplayName:lower():find(q, 1, true)) then
+                        _G.adminTarget = plr
+                        print("[NOVA] Admin target set to: " .. plr.Name)
+                        return
+                    end
+                end
+                print("[NOVA] Player not found")
+            end
+        end},
     }
 
     local function execCommand(msg)
-        if not msg or msg:sub(1,1)~="." then return end
-        local cmd,args=msg:match("^%.(%S+)%s*(.*)")
+        if not msg then return end
+        local prefix = msg:sub(1,1)
+        if prefix ~= "." and prefix ~= "+" then return end
+        local pattern = "^"..prefix.."(%S+)%s*(.*)"
+        local cmd,args=msg:match(pattern)
         if not cmd then return end
         cmd=cmd:lower()
         for _,c in ipairs(COMMANDS) do
-            local cBase=c.cmd:match("^%.(%S+)") or ""
+            local cBase=c.cmd:match("^[%.%+](%S+)") or ""
             if cBase:lower()==cmd then pcall(c.run, args~="" and args or nil); return end
         end
     end

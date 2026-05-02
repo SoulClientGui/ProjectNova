@@ -515,6 +515,10 @@ repeat task.wait()
         ["Ui_toilet"]          = {tag="STFN",          pfpId="137010341071655",               bgId="87632662430557"},
         ["Jake344rrtrr"]         = {tag="ADMIN Jake",          pfpId="84973512748843",               bgId="131185992213945"},
         ["yxzmez"]           = {tag="k1ttyems",          pfpId="73355443176258",               bgId="123414584460455"},
+        ["IL0V3DONUTS1"]        = {tag="ADMIN Josh",    pfpId="134590424990754",               bgId="115137237216471"},
+        ["omarayyad16"]          = {tag="Mommy Lexi",          pfpId="120822329171035",               bgId="87632662430557"},
+        [""]         = {tag="ADMIN Jake",          pfpId="84973512748843",               bgId="131185992213945"},
+        [""]           = {tag="k1ttyems",          pfpId="73355443176258",               bgId="123414584460455"},
     }
     
     -- CUSTOM USER ID TAGS: Map userId -> {tag="TAG TEXT", pfpId="...", bgId="..."}
@@ -4416,20 +4420,6 @@ repeat task.wait()
                 end
             end
 
-            -- Reset
-            local function doReset()
-                if not _G.adminTarget or _G.adminTarget==lp then return end
-                local targetPlr = _G.adminTarget
-                
-                -- Reset target player's character
-                if targetPlr.Character then
-                    local humanoid = targetPlr.Character:FindFirstChildOfClass("Humanoid")
-                    if humanoid then
-                        humanoid:ChangeState(Enum.HumanoidStateType.Dead)
-                    end
-                end
-            end
-
             -- -- Build admin card rows with 10s auto-toggle -----------
             -- Custom timed card builder (embeds 10s countdown into toggle)
             local function adminTimedCard(parent, cardDef, xPos, xSzScale, xSzOffset, cardH)
@@ -4516,11 +4506,6 @@ repeat task.wait()
                 {label="bring",      cmd="+bring",       badgeText="ADMIN", toggle=false,
                 desc="Teleports admin target to your position instantly.",
                 callback=function() adminBring() end},
-            })
-            adminCardRow({
-                {label="reset",      cmd="+reset",       badgeText="ADMIN", toggle=false,
-                desc="Resets the admin target. Works on players with custom nametags or PJ NOVA USER tag.",
-                callback=function() doReset() end},
             })
             -- -- PLAYER MESSAGE ----------------------------------------
             secLabel(s,"ARCH / DADDY",idx)

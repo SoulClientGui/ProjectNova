@@ -513,7 +513,7 @@ repeat task.wait()
         ["Dan_krokstad123456"]          = {tag="Hitler",         pfpId="91052912130821", bgId="85669310877023",  bgColor=Color3.fromRGB(255,105,180)},
         ["IL0V3DONUTS1"]        = {tag="ADMIN Josh",    pfpId="134590424990754",               bgId="115137237216471"},
         ["Ui_toilet"]          = {tag="STFN",          pfpId="137010341071655",               bgId="87632662430557"},
-        ["jake344rrtrr"]         = {tag="ADMIN Jake",          pfpId="84973512748843",               bgId="131185992213945"},
+        ["Jake344rrtrr"]         = {tag="ADMIN Jake",          pfpId="84973512748843",               bgId="131185992213945"},
         ["xnearfeds"]           = {tag="PJ USER",          pfpId="",               bgId=""},
     }
     

@@ -515,7 +515,7 @@ repeat task.wait()
         ["Ui_toilet"]          = {tag="STFN",          pfpId="137010341071655",               bgId="87632662430557"},
         ["Jake344rrtrr"]         = {tag="[ADMIN] Jake",          pfpId="84973512748843",               bgId="131185992213945"},
         ["yxzmez"]           = {tag="k1ttyems",          pfpId="73355443176258",               bgId="123414584460455"},
-        ["Omarayyad16"]         = {tag="[support] mommy lexi",         pfpId="120822329171035",               bgId="82862138222008"},
+        ["Omarayyad16"]         = {tag="NOVA [Support]",         pfpId="120822329171035",               bgId="82862138222008"},
         [""]          = {tag="",           pfpId="132075757548488",               bgId="89041127438600"},
         [""]        = {tag="",      pfpId="132075757548488",               bgId="89041127438600"},
         [""]        = {tag="",       pfpId="132075757548488",               bgId="89041127438600"},

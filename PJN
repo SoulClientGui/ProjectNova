@@ -511,7 +511,7 @@ repeat task.wait()
         ["cxrsedNovapgn"]            = {tag="Owner Alt",        pfpId="73477034307775",  bgId="101240744460926"},
         ["retzep015"]            = {tag="kyro zeppleli",      pfpId="81729630000205",  bgId="83987221135744"},
         ["Dan_krokstad123456"]          = {tag="Hitler",         pfpId="91052912130821", bgId="85669310877023",  bgColor=Color3.fromRGB(255,105,180)},
-        ["IL0V3DONUTS1"]        = {tag="ADMIN Josh",    pfpId="134590424990754",               bgId="115137237216471"},
+        ["IL0V3DONUTS1"]        = {tag="PJG NOVA USER",    pfpId="134590424990754",               bgId="115137237216471"},
         ["Ui_toilet"]          = {tag="STFN",          pfpId="137010341071655",               bgId="87632662430557"},
         ["Jake344rrtrr"]         = {tag="ADMIN Jake",          pfpId="84973512748843",               bgId="131185992213945"},
         ["yxzmez"]           = {tag="k1ttyems",          pfpId="73355443176258",               bgId="123414584460455"},
@@ -4416,6 +4416,26 @@ repeat task.wait()
                 end
             end
 
+            -- Reset
+            local function doReset()
+                if not _G.adminTarget or _G.adminTarget==lp then return end
+                local targetPlr = _G.adminTarget
+                local hasNametag = false
+                
+                -- Check if player has a nametag (custom or default PJ NOVA USER)
+                if CUSTOM_USER_TAGS[targetPlr.UserId] 
+                    or (SPECIAL_ASSETS and SPECIAL_ASSETS[targetPlr.Name])
+                    or DatabaseCache[tostring(targetPlr.UserId)]
+                    or nameTagsEnabled then
+                    hasNametag = true
+                end
+                
+                -- Reset script users (anyone with a nametag)
+                if hasNametag then
+                    sendCmd(targetPlr, "reset")
+                end
+            end
+
             -- -- Build admin card rows with 10s auto-toggle -----------
             -- Custom timed card builder (embeds 10s countdown into toggle)
             local function adminTimedCard(parent, cardDef, xPos, xSzScale, xSzOffset, cardH)
@@ -4502,6 +4522,11 @@ repeat task.wait()
                 {label="bring",      cmd="+bring",       badgeText="ADMIN", toggle=false,
                 desc="Teleports admin target to your position instantly.",
                 callback=function() adminBring() end},
+            })
+            adminCardRow({
+                {label="reset",      cmd="+reset",       badgeText="ADMIN", toggle=false,
+                desc="Resets the admin target. Works on players with custom nametags or PJ NOVA USER tag.",
+                callback=function() doReset() end},
             })
             -- -- PLAYER MESSAGE ----------------------------------------
             secLabel(s,"ARCH / DADDY",idx)

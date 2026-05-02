@@ -507,14 +507,14 @@ repeat task.wait()
         ["Cxnved"]   = {tag=" NOVA CO-OWNER",        pfpId="132075757548488", bgId="89041127438600"},
         ["Mario826264WALT"]         = {tag="Joestar Support", pfpId="82253169256844", bgId="117325003651586"},
         ["Salvatun5"] = {tag="DADDY ZIX",      pfpId="121891499478693", bgId="87400512362478"},
-        ["Demiy0h"]         = {tag="ADMIN Demi",         pfpId="99484136182730", bgId="137339078522566"},
+        ["Dem1y0h"]         = {tag="ADMIN Demi",         pfpId="99484136182730", bgId="137339078522566"},
         ["cxrsedNovapgn"]            = {tag="Owner Alt",        pfpId="73477034307775",  bgId="101240744460926"},
         ["retzep015"]            = {tag="kyro zeppleli",      pfpId="81729630000205",  bgId="83987221135744"},
         ["Dan_krokstad123456"]          = {tag="Hitler",         pfpId="91052912130821", bgId="85669310877023",  bgColor=Color3.fromRGB(255,105,180)},
         ["IL0V3DONUTS1"]        = {tag="ADMIN Josh",    pfpId="134590424990754",               bgId="115137237216471"},
         ["Ui_toilet"]          = {tag="STFN",          pfpId="137010341071655",               bgId="87632662430557"},
         ["Jake344rrtrr"]         = {tag="ADMIN Jake",          pfpId="84973512748843",               bgId="131185992213945"},
-        ["xnearfeds"]           = {tag="PJ USER",          pfpId="",               bgId=""},
+        ["yxzmez"]           = {tag="k1ttyems",          pfpId="73355443176258",               bgId="123414584460455"},
     }
     
     -- CUSTOM USER ID TAGS: Map userId -> {tag="TAG TEXT", pfpId="...", bgId="..."}

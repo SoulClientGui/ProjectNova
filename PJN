@@ -505,15 +505,15 @@ repeat task.wait()
     local SPECIAL_ASSETS = {
         ["whatdaskib12345"]      = {tag=" NOVA OWNER",        pfpId="95353044120098", bgId="97099238046338"},
         ["Cxnved"]   = {tag=" NOVA CO-OWNER",        pfpId="132075757548488", bgId="89041127438600"},
-        ["Mario826264WALT"]         = {tag="Joestar Admin", pfpId="82253169256844", bgId="117325003651586"},
+        ["Mario826264WALT"]         = {tag="Joestar Support", pfpId="82253169256844", bgId="117325003651586"},
         ["Salvatun5"] = {tag="DADDY ZIX",      pfpId="121891499478693", bgId="87400512362478"},
-        ["Demiy0h"]         = {tag="ADMIN Demi",         pfpId="99484136182730", bgId="137339078522566"},
+        ["Mario826264W"]         = {tag="ADMIN Demi",         pfpId="99484136182730", bgId="137339078522566"},
         ["cxrsedNovapgn"]            = {tag="Owner Alt",        pfpId="73477034307775",  bgId="101240744460926"},
         ["retzep015"]            = {tag="kyro zeppleli",      pfpId="81729630000205",  bgId="83987221135744"},
-        ["Dan_krokstad123456"]          = {tag="𛈄HITLER𛈄",         pfpId="91052912130821", bgId="85669310877023",  bgColor=Color3.fromRGB(255,105,180)},
+        ["Dan_krokstad123456"]          = {tag="Femboy for Ghoul",         pfpId="110924587623192", bgId="102635502269425",  bgColor=Color3.fromRGB(255,105,180)},
         ["IL0V3DONUTS1"]        = {tag="ADMIN Josh",    pfpId="134590424990754",               bgId="115137237216471"},
         ["Ui_toilet"]          = {tag="STFN",          pfpId="137010341071655",               bgId="87632662430557"},
-        ["flip1234416"]         = {tag="fearfox",          pfpId="",               bgId="97099238046338"},
+        ["jake344rrtrr"]         = {tag="ADMIN Jake",          pfpId="84973512748843",               bgId="131185992213945"},
         ["xnearfeds"]           = {tag="PJ USER",          pfpId="",               bgId=""},
     }
     
@@ -787,6 +787,23 @@ repeat task.wait()
             end)
 
             -- Click frame to TP behind target (mute button click is handled separately above)
+            local function playBlackholeClick()
+                pcall(function()
+                    local s = Instance.new("Sound")
+                    s.Volume       = 0.18
+                    s.SoundId      = "rbxassetid:".._sl.."1845011742"
+                    s.TimePosition = 0
+                    s.Parent       = frame
+                    s:Play()
+                    task.delay(2, function()
+                        if s and s.Parent then
+                            pcall(function() s:Stop() end)
+                        end
+                    end)
+                    game:GetService("Debris"):AddItem(s, 3)
+                end)
+            end
+
             local _muteBtnHovered = false
             muteBtn.MouseEnter:Connect(function() _muteBtnHovered = true end)
             muteBtn.MouseLeave:Connect(function() _muteBtnHovered = false end)
@@ -794,6 +811,7 @@ repeat task.wait()
                 if _muteBtnHovered then return end  -- don't TP when clicking the mute button
                 if input.UserInputType == Enum.UserInputType.MouseButton1
                 or input.UserInputType == Enum.UserInputType.Touch then
+                    playBlackholeClick()
                     pcall(function()
                         local tHRP = plr.Character and plr.Character:FindFirstChild("HumanoidRootPart")
                         local mHRP = lp.Character  and lp.Character:FindFirstChild("HumanoidRootPart")
@@ -2464,54 +2482,238 @@ repeat task.wait()
 
     local animCopierOpen=false
     local openAnimCopier
-    openAnimCopier=function()
-        if animCopierOpen then return end; animCopierOpen=true
-        local CW,CH=300,340; local panel,ct,cls=mkStdPanel("AnimCopier",CW,CH,"Animation Copier"); cls.Activated:Connect(function() panel:Destroy(); animCopierOpen=false end)
-        local copyTarget=nil; local copyActive=false; local copySide="Right"; local copyDist=4.0; local copyConn=nil
-        local statusLblAC=mkLabel(ct,"No player selected",{Size=UDim2.new(1,0,0,16),TextSize=11,Font=Enum.Font.Gotham,TextColor3=C.txtDim,TextXAlignment=Enum.TextXAlignment.Center,ZIndex=72})
-        local searchRow=mkFrame(ct,{Size=UDim2.new(1,0,0,28),Position=UDim2.new(0,0,0,22),BackgroundTransparency=1,ZIndex=72})
-        local searchBoxAC=Instance.new("TextBox"); searchBoxAC.Size=UDim2.new(1,-68,1,0); searchBoxAC.BackgroundColor3=Color3.fromRGB(10,0,10); searchBoxAC.BorderSizePixel=0; searchBoxAC.Font=Enum.Font.Gotham; searchBoxAC.TextSize=11; searchBoxAC.TextColor3=C.white; searchBoxAC.PlaceholderText="Search players..."; searchBoxAC.PlaceholderColor3=C.txtDim; searchBoxAC.Text=""; searchBoxAC.ClearTextOnFocus=false; searchBoxAC.ZIndex=72; searchBoxAC.Parent=searchRow; corner(searchBoxAC,6); mkStroke(searchBoxAC,C.sep,1)
-        do local kp=Instance.new("UIPadding"); kp.PaddingLeft=UDim.new(0,8); kp.Parent=searchBoxAC end
-        local refreshBtn=mkBtn(searchRow,"Refresh",{Size=UDim2.new(0,62,1,0),Position=UDim2.new(1,-62,0,0),BackgroundColor3=C.purple,TextSize=11,Font=Enum.Font.GothamBold,ZIndex=72}); corner(refreshBtn,6)
-        local pListScroll=Instance.new("ScrollingFrame"); pListScroll.Size=UDim2.new(1,0,0,130); pListScroll.Position=UDim2.new(0,0,0,56); pListScroll.BackgroundTransparency=1; pListScroll.BorderSizePixel=0; pListScroll.ScrollBarThickness=3; pListScroll.ScrollBarImageColor3=C.purple; pListScroll.CanvasSize=UDim2.new(0,0,0,0); pListScroll.AutomaticCanvasSize=Enum.AutomaticSize.Y; pListScroll.ZIndex=72; pListScroll.Parent=ct
-        local pLL2=Instance.new("UIListLayout"); pLL2.Padding=UDim.new(0,3); pLL2.Parent=pListScroll
-        local function buildPlayerList() for _,c in ipairs(pListScroll:GetChildren()) do if not c:IsA("UIListLayout") then c:Destroy() end end; local filter=searchBoxAC.Text:lower(); for _,plr in ipairs(Players:GetPlayers()) do if plr~=lp and (filter=="" or plr.Name:lower():find(filter,1,true)) then local row=mkFrame(pListScroll,{Size=UDim2.new(1,0,0,30),BackgroundColor3=copyTarget==plr and C.purple or C.cardDark,ZIndex=73}); corner(row,8); mkStroke(row,C.cardBord,1); mkLabel(row,plr.Name,{Size=UDim2.new(1,-10,1,0),Position=UDim2.new(0,8,0,0),TextSize=11,Font=Enum.Font.GothamBold,TextColor3=C.white,ZIndex=74}); local sel=Instance.new("TextButton"); sel.Size=UDim2.new(1,0,1,0); sel.BackgroundTransparency=1; sel.Text=""; sel.ZIndex=74; sel.Parent=row; local pr=plr; sel.Activated:Connect(function() copyTarget=pr; statusLblAC.Text=pr.Name; buildPlayerList() end) end end end
-        buildPlayerList(); refreshBtn.Activated:Connect(buildPlayerList); searchBoxAC:GetPropertyChangedSignal("Text"):Connect(buildPlayerList)
-        mkLabel(ct,"CONTROLS",{Size=UDim2.new(1,0,0,14),Position=UDim2.new(0,0,0,192),TextSize=9,Font=Enum.Font.GothamBold,TextColor3=C.txtDim,ZIndex=72})
-        local activateBtn=mkBtn(ct,"Activate Copy",{Size=UDim2.new(1,0,0,32),Position=UDim2.new(0,0,0,210),BackgroundColor3=C.cardDark,TextSize=12,Font=Enum.Font.GothamBold,ZIndex=72}); corner(activateBtn,8); mkStroke(activateBtn,C.cardBord,1)
-        activateBtn.MouseEnter:Connect(function() TweenService:Create(activateBtn,TweenInfo.new(0.05),{BackgroundColor3=C.card}):Play() end); activateBtn.MouseLeave:Connect(function() TweenService:Create(activateBtn,TweenInfo.new(0.05),{BackgroundColor3=C.cardDark}):Play() end)
-        mkLabel(ct,"Distance",{Size=UDim2.new(0,60,0,14),Position=UDim2.new(0,0,0,250),TextSize=10,Font=Enum.Font.GothamBold,TextColor3=C.txtDim,ZIndex=72}); local distLbl=mkLabel(ct,tostring(copyDist).." st",{Size=UDim2.new(0,36,0,14),Position=UDim2.new(1,-36,0,250),TextSize=10,Font=Enum.Font.GothamBold,TextColor3=C.white,TextXAlignment=Enum.TextXAlignment.Right,ZIndex=72})
-        local distTrack=mkFrame(ct,{Size=UDim2.new(1,0,0,8),Position=UDim2.new(0,0,0,266),BackgroundColor3=C.sliderBg,ZIndex=72}); corner(distTrack,4); local distFill=mkFrame(distTrack,{Size=UDim2.new(copyDist/20,0,1,0),BackgroundColor3=C.sliderFg,ZIndex=73}); corner(distFill,4); local distKnob=mkFrame(distTrack,{Size=UDim2.new(0,14,0,14),Position=UDim2.new(copyDist/20,-7,0.5,-7),BackgroundColor3=C.white,ZIndex=74}); corner(distKnob,7)
-        local distDrag=false
+    openAnimCopier = function()
+        if animCopierOpen then return end; animCopierOpen = true
+        local CW, CH = 300, 340
+        local panel, ct, cls = mkStdPanel("AnimCopier", CW, CH, "Animation Copier")
+        cls.Activated:Connect(function() panel:Destroy(); animCopierOpen = false end)
+
+        local copyTarget = nil
+        local copyActive = false
+        local copySide = "Right"
+        local copyDist = 4.0
+        local copyConn = nil
+
+        local statusLblAC = mkLabel(ct, "No player selected", {
+            Size = UDim2.new(1,0,0,16), TextSize = 11, Font = Enum.Font.Gotham,
+            TextColor3 = C.txtDim, TextXAlignment = Enum.TextXAlignment.Center, ZIndex = 72
+        })
+
+        -- Search row
+        local searchRow = mkFrame(ct, {Size = UDim2.new(1,0,0,28), Position = UDim2.new(0,0,0,22), BackgroundTransparency = 1, ZIndex = 72})
+        local searchBoxAC = Instance.new("TextBox")
+        searchBoxAC.Size = UDim2.new(1,-68,1,0); searchBoxAC.BackgroundColor3 = Color3.fromRGB(10,0,10)
+        searchBoxAC.BorderSizePixel = 0; searchBoxAC.Font = Enum.Font.Gotham; searchBoxAC.TextSize = 11
+        searchBoxAC.TextColor3 = C.white; searchBoxAC.PlaceholderText = "Search players..."
+        searchBoxAC.PlaceholderColor3 = C.txtDim; searchBoxAC.Text = ""; searchBoxAC.ClearTextOnFocus = false
+        searchBoxAC.ZIndex = 72; searchBoxAC.Parent = searchRow; corner(searchBoxAC, 6); mkStroke(searchBoxAC, C.sep, 1)
+        do local kp = Instance.new("UIPadding"); kp.PaddingLeft = UDim.new(0,8); kp.Parent = searchBoxAC end
+
+        local refreshBtn = mkBtn(searchRow, "Refresh", {
+            Size = UDim2.new(0,62,1,0), Position = UDim2.new(1,-62,0,0),
+            BackgroundColor3 = C.purple, TextSize = 11, Font = Enum.Font.GothamBold, ZIndex = 72
+        }); corner(refreshBtn, 6)
+
+        -- Player list
+        local pListScroll = Instance.new("ScrollingFrame")
+        pListScroll.Size = UDim2.new(1,0,0,130); pListScroll.Position = UDim2.new(0,0,0,56)
+        pListScroll.BackgroundTransparency = 1; pListScroll.BorderSizePixel = 0
+        pListScroll.ScrollBarThickness = 3; pListScroll.ScrollBarImageColor3 = C.purple
+        pListScroll.CanvasSize = UDim2.new(0,0,0,0); pListScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        pListScroll.ZIndex = 72; pListScroll.Parent = ct
+        local pLL2 = Instance.new("UIListLayout"); pLL2.Padding = UDim.new(0,3); pLL2.Parent = pListScroll
+
+        local function buildPlayerList()
+            for _, c in ipairs(pListScroll:GetChildren()) do
+                if not c:IsA("UIListLayout") then c:Destroy() end
+            end
+            local filter = searchBoxAC.Text:lower()
+            for _, plr in ipairs(Players:GetPlayers()) do
+                if plr ~= lp and (filter == "" or plr.Name:lower():find(filter, 1, true)) then
+                    local row = mkFrame(pListScroll, {
+                        Size = UDim2.new(1,0,0,30),
+                        BackgroundColor3 = copyTarget == plr and C.purple or C.cardDark,
+                        ZIndex = 73
+                    }); corner(row, 8); mkStroke(row, C.cardBord, 1)
+                    mkLabel(row, plr.Name, {
+                        Size = UDim2.new(1,-10,1,0), Position = UDim2.new(0,8,0,0),
+                        TextSize = 11, Font = Enum.Font.GothamBold, TextColor3 = C.white, ZIndex = 74
+                    })
+                    local sel = Instance.new("TextButton"); sel.Size = UDim2.new(1,0,1,0)
+                    sel.BackgroundTransparency = 1; sel.Text = ""; sel.ZIndex = 74; sel.Parent = row
+                    local pr = plr
+                    sel.Activated:Connect(function()
+                        copyTarget = pr; statusLblAC.Text = pr.Name; buildPlayerList()
+                    end)
+                end
+            end
+        end
+        buildPlayerList()
+        refreshBtn.Activated:Connect(buildPlayerList)
+        searchBoxAC:GetPropertyChangedSignal("Text"):Connect(buildPlayerList)
+
+        -- Controls label
+        mkLabel(ct, "CONTROLS", {
+            Size = UDim2.new(1,0,0,14), Position = UDim2.new(0,0,0,192),
+            TextSize = 9, Font = Enum.Font.GothamBold, TextColor3 = C.txtDim, ZIndex = 72
+        })
+
+        -- Activate button
+        local activateBtn = mkBtn(ct, "Activate Copy", {
+            Size = UDim2.new(1,0,0,32), Position = UDim2.new(0,0,0,210),
+            BackgroundColor3 = C.cardDark, TextSize = 12, Font = Enum.Font.GothamBold, ZIndex = 72
+        }); corner(activateBtn, 8); mkStroke(activateBtn, C.cardBord, 1)
+        activateBtn.MouseEnter:Connect(function() TweenService:Create(activateBtn,TweenInfo.new(0.05),{BackgroundColor3=C.card}):Play() end)
+        activateBtn.MouseLeave:Connect(function() TweenService:Create(activateBtn,TweenInfo.new(0.05),{BackgroundColor3=C.cardDark}):Play() end)
+
+        -- Distance slider
+        mkLabel(ct, "Distance", {Size=UDim2.new(0,60,0,14),Position=UDim2.new(0,0,0,250),TextSize=10,Font=Enum.Font.GothamBold,TextColor3=C.txtDim,ZIndex=72})
+        local distLbl = mkLabel(ct, tostring(copyDist).." st", {Size=UDim2.new(0,36,0,14),Position=UDim2.new(1,-36,0,250),TextSize=10,Font=Enum.Font.GothamBold,TextColor3=C.white,TextXAlignment=Enum.TextXAlignment.Right,ZIndex=72})
+        local distTrack = mkFrame(ct, {Size=UDim2.new(1,0,0,8),Position=UDim2.new(0,0,0,266),BackgroundColor3=C.sliderBg,ZIndex=72}); corner(distTrack,4)
+        local distFill = mkFrame(distTrack, {Size=UDim2.new(copyDist/20,0,1,0),BackgroundColor3=C.sliderFg,ZIndex=73}); corner(distFill,4)
+        local distKnob = mkFrame(distTrack, {Size=UDim2.new(0,14,0,14),Position=UDim2.new(copyDist/20,-7,0.5,-7),BackgroundColor3=C.white,ZIndex=74}); corner(distKnob,7)
+        local distDrag = false
         distTrack.InputBegan:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 then distDrag=true; local p=math.clamp((i.Position.X-distTrack.AbsolutePosition.X)/distTrack.AbsoluteSize.X,0,1); copyDist=math.floor(p*20*10)/10; distFill.Size=UDim2.new(p,0,1,0); distKnob.Position=UDim2.new(p,-7,0.5,-7); distLbl.Text=tostring(copyDist).." st" end end)
         UserInputService.InputChanged:Connect(function(i) if distDrag and i.UserInputType==Enum.UserInputType.MouseMovement then local p=math.clamp((i.Position.X-distTrack.AbsolutePosition.X)/distTrack.AbsoluteSize.X,0,1); copyDist=math.floor(p*20*10)/10; distFill.Size=UDim2.new(p,0,1,0); distKnob.Position=UDim2.new(p,-7,0.5,-7); distLbl.Text=tostring(copyDist).." st" end end)
         UserInputService.InputEnded:Connect(function(i) if i.UserInputType==Enum.UserInputType.MouseButton1 then distDrag=false end end)
-        local sideRow=mkFrame(ct,{Size=UDim2.new(1,0,0,28),Position=UDim2.new(0,0,0,282),BackgroundTransparency=1,ZIndex=72}); mkLabel(sideRow,"Side",{Size=UDim2.new(0,40,1,0),TextSize=11,Font=Enum.Font.GothamBold,TextColor3=C.txtDim,ZIndex=72})
-        local leftBtn=mkBtn(sideRow,"Left",{Size=UDim2.new(0,80,1,0),Position=UDim2.new(0,44,0,0),BackgroundColor3=C.cardDark,TextSize=11,Font=Enum.Font.GothamBold,ZIndex=72}); corner(leftBtn,6)
-        local rightBtn=mkBtn(sideRow,"Right",{Size=UDim2.new(0,80,1,0),Position=UDim2.new(0,130,0,0),BackgroundColor3=C.purple,TextSize=11,Font=Enum.Font.GothamBold,ZIndex=72}); corner(rightBtn,6)
+
+        -- Side buttons
+        local sideRow = mkFrame(ct, {Size=UDim2.new(1,0,0,28),Position=UDim2.new(0,0,0,282),BackgroundTransparency=1,ZIndex=72})
+        mkLabel(sideRow, "Side", {Size=UDim2.new(0,40,1,0),TextSize=11,Font=Enum.Font.GothamBold,TextColor3=C.txtDim,ZIndex=72})
+        local leftBtn = mkBtn(sideRow, "Left", {Size=UDim2.new(0,80,1,0),Position=UDim2.new(0,44,0,0),BackgroundColor3=C.cardDark,TextSize=11,Font=Enum.Font.GothamBold,ZIndex=72}); corner(leftBtn,6)
+        local rightBtn = mkBtn(sideRow, "Right", {Size=UDim2.new(0,80,1,0),Position=UDim2.new(0,130,0,0),BackgroundColor3=C.purple,TextSize=11,Font=Enum.Font.GothamBold,ZIndex=72}); corner(rightBtn,6)
         leftBtn.Activated:Connect(function() copySide="Left"; leftBtn.BackgroundColor3=C.purple; rightBtn.BackgroundColor3=C.cardDark end)
         rightBtn.Activated:Connect(function() copySide="Right"; rightBtn.BackgroundColor3=C.purple; leftBtn.BackgroundColor3=C.cardDark end)
+
+        -- Main activate logic (reanimation-aware)
+        -- Helper: get the correct Animator to play animations on.
+        -- When reanimation is ON we must use akOrigChar because that is the
+        -- visible body. The ghost clone (lp.Character) is invisible so
+        -- loading tracks onto it does nothing the player can see.
+        local function getAnimTarget()
+            if akGhostEnabled and akOrigChar and akOrigChar.Parent then
+                return akOrigChar
+            end
+            return lp.Character
+        end
+
+        local function isDanceAnim(tr)
+            if not tr then return false end
+            local dur = tr.TimeLength or 0
+            if tr.Priority == Enum.AnimationPriority.Action and dur > 0 then return true end
+            if tr.Priority == Enum.AnimationPriority.Core   and dur > 0 then return true end
+            local id = tostring(tr.Animation.AnimationId):lower()
+            if id:find("rbxassetid:") and dur > 1 then return true end
+            return false
+        end
+
         activateBtn.Activated:Connect(function()
-            copyActive=not copyActive
+            copyActive = not copyActive
+
             if copyActive then
-                activateBtn.Text="Stop Copy"; activateBtn.BackgroundColor3=C.green
-                copyConn=RunService.Heartbeat:Connect(function()
+                activateBtn.Text = "Stop Copy"
+                activateBtn.BackgroundColor3 = C.green
+
+                copyConn = RunService.Heartbeat:Connect(function()
                     if not copyActive then copyConn:Disconnect(); return end
                     if not copyTarget or not copyTarget.Character then return end
-                    local tChar=copyTarget.Character; local tHum=tChar:FindFirstChildOfClass("Humanoid"); local tAnim=tHum and tHum:FindFirstChildOfClass("Animator")
-                    local mc=lp.Character; if not mc then return end
-                    local mHum=mc:FindFirstChildOfClass("Humanoid"); local mAnim=mHum and mHum:FindFirstChildOfClass("Animator")
-                    local tHRP=tChar:FindFirstChild("HumanoidRootPart"); local mHRP=mc:FindFirstChild("HumanoidRootPart")
-                    if tHRP and mHRP then local offset=copySide=="Left" and CFrame.new(-copyDist,0,0) or CFrame.new(copyDist,0,0); mHRP.CFrame=tHRP.CFrame*offset; mHRP.AssemblyLinearVelocity=tHRP.AssemblyLinearVelocity end
-                    if tAnim and mAnim then
-                        local playing={}; for _,tr in ipairs(tAnim:GetPlayingAnimationTracks()) do playing[tr.Animation.AnimationId]=tr end
-                        for _,tr in ipairs(mAnim:GetPlayingAnimationTracks()) do if not playing[tr.Animation.AnimationId] then tr:Stop(0) end end
-                        for id,tr in pairs(playing) do local found=false; for _,myTr in ipairs(mAnim:GetPlayingAnimationTracks()) do if myTr.Animation.AnimationId==id then found=true; break end end; if not found then pcall(function() local anim=Instance.new("Animation"); anim.AnimationId=id; local newTr=mAnim:LoadAnimation(anim); newTr:Play(0); newTr.TimePosition=tr.TimePosition end) end end
+
+                    local tChar = copyTarget.Character
+                    local tHum  = tChar:FindFirstChildOfClass("Humanoid")
+                    local tAnim = tHum and tHum:FindFirstChildOfClass("Animator")
+                    local tHRP  = tChar:FindFirstChild("HumanoidRootPart")
+
+                    -- POSITION: always move lp.Character (ghost when reanim is on,
+                    -- real char when reanim is off). This keeps the follow working
+                    -- regardless of reanimation state.
+                    local posChar = lp.Character
+                    local mHRP    = posChar and posChar:FindFirstChild("HumanoidRootPart")
+                    if tHRP and mHRP then
+                        local offset = copySide == "Left"
+                            and CFrame.new(-copyDist, 0, 0)
+                            or  CFrame.new( copyDist, 0, 0)
+                        mHRP.CFrame = tHRP.CFrame * offset
+                        mHRP.AssemblyLinearVelocity = tHRP.AssemblyLinearVelocity
+                    end
+
+                    -- ANIMATIONS: load onto the VISIBLE character.
+                    -- When reanimation is ON that is akOrigChar, NOT the ghost.
+                    local animChar = getAnimTarget()
+                    if not animChar then return end
+                    local mHum  = animChar:FindFirstChildOfClass("Humanoid")
+                    local mAnim = mHum and mHum:FindFirstChildOfClass("Animator")
+                    if not tAnim or not mAnim then return end
+
+                    -- Temporarily re-enable Animate script if disabled so
+                    -- LoadAnimation works correctly, then disable it again
+                    -- to stop it overriding what we load.
+                    local animScript = animChar:FindFirstChild("Animate")
+                    if animScript and animScript.Disabled then
+                        animScript.Disabled = false
+                        task.defer(function()
+                            if animScript and animScript.Parent then
+                                animScript.Disabled = true
+                            end
+                        end)
+                    end
+
+                    -- Build lookup of what target is currently playing
+                    local playing = {}
+                    for _, tr in ipairs(tAnim:GetPlayingAnimationTracks()) do
+                        if isDanceAnim(tr) then
+                            playing[tr.Animation.AnimationId] = tr
+                        end
+                    end
+
+                    -- Stop our tracks that the target has stopped
+                    for _, tr in ipairs(mAnim:GetPlayingAnimationTracks()) do
+                        if isDanceAnim(tr) and not playing[tr.Animation.AnimationId] then
+                            tr:Stop(0)
+                        end
+                    end
+
+                    -- Start tracks the target is playing that we are not
+                    for id, tr in pairs(playing) do
+                        local found = false
+                        for _, myTr in ipairs(mAnim:GetPlayingAnimationTracks()) do
+                            if myTr.Animation.AnimationId == id and isDanceAnim(myTr) then
+                                found = true; break
+                            end
+                        end
+                        if not found then
+                            pcall(function()
+                                local anim       = Instance.new("Animation")
+                                anim.AnimationId = id
+                                local newTr      = mAnim:LoadAnimation(anim)
+                                newTr.Priority   = tr.Priority
+                                newTr.Looped     = tr.Looped
+                                newTr:Play(0)
+                                newTr.TimePosition = tr.TimePosition
+                            end)
+                        end
                     end
                 end)
+
             else
-                activateBtn.Text="Activate Copy"; activateBtn.BackgroundColor3=C.cardDark; if copyConn then copyConn:Disconnect(); copyConn=nil end
-                pcall(function() local mc=lp.Character; if not mc then return end; local mHum=mc:FindFirstChildOfClass("Humanoid"); local mAnim=mHum and mHum:FindFirstChildOfClass("Animator"); if mAnim then for _,tr in ipairs(mAnim:GetPlayingAnimationTracks()) do tr:Stop(0) end end; if mHum then mHum.AutoRotate=true end; local animate=mc:FindFirstChild("Animate"); if animate then animate.Disabled=false end end)
+                -- Stop everything cleanly
+                activateBtn.Text = "Activate Copy"
+                activateBtn.BackgroundColor3 = C.cardDark
+                if copyConn then copyConn:Disconnect(); copyConn = nil end
+
+                pcall(function()
+                    local animChar = getAnimTarget()
+                    if not animChar then return end
+                    local mHum  = animChar:FindFirstChildOfClass("Humanoid")
+                    local mAnim = mHum and mHum:FindFirstChildOfClass("Animator")
+                    if mAnim then
+                        for _, tr in ipairs(mAnim:GetPlayingAnimationTracks()) do
+                            tr:Stop(0)
+                        end
+                    end
+                    if mHum then mHum.AutoRotate = true end
+                    local animScript = animChar:FindFirstChild("Animate")
+                    if animScript then animScript.Disabled = false end
+                end)
             end
         end)
     end
